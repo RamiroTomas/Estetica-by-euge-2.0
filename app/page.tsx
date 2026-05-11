@@ -456,12 +456,18 @@ export default function NailSalonPage() {
                 </div>
               </div>
 
-              <div className="mt-16 flex justify-center lg:justify-start gap-6">
-                <a href="#" className="w-12 h-12 rounded-full border border-forest/10 flex items-center justify-center hover:bg-forest hover:text-lilac transition-all">
-                  <Instagram size={22} />
+              <div className="mt-16 flex justify-center lg:justify-start gap-8">
+                <a href="https://www.instagram.com/estetica.by.euge/?hl=es" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity">
+                  <div className="w-12 h-12 rounded-full border border-forest/10 flex items-center justify-center hover:bg-forest hover:text-lilac transition-all">
+                    <Instagram size={22} />
+                  </div>
+                  <span className="text-xs font-bold text-forest/60 uppercase tracking-widest">Instagram</span>
                 </a>
-                <a href="#" className="w-12 h-12 rounded-full border border-forest/10 flex items-center justify-center hover:bg-forest hover:text-lilac transition-all">
-                  <MessageCircle size={22} />
+                <a href="https://w.app/esteticabyeuge" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity">
+                  <div className="w-12 h-12 rounded-full border border-forest/10 flex items-center justify-center hover:bg-forest hover:text-lilac transition-all">
+                    <Phone size={22} />
+                  </div>
+                  <span className="text-xs font-bold text-forest/60 uppercase tracking-widest">Whatsapp</span>
                 </a>
               </div>
             </div>
@@ -521,12 +527,8 @@ export default function NailSalonPage() {
           <div className="p-12 bg-lilac/5 flex flex-col justify-between">
             <div>
               <h4 className="text-[10px] uppercase tracking-[0.4em] text-forest mb-8 font-black">Contacto</h4>
-              <p className="text-2xl serif font-light italic mb-2 tracking-wide">+54 9 11 1234-5678</p>
+              <p className="text-2xl serif font-light italic mb-2 tracking-wide">+598 94021747</p>
               <p className="text-[10px] opacity-40 uppercase tracking-[0.3em] font-black">ESTETICA.BY.EUGE</p>
-            </div>
-            <div className="flex items-center gap-3 mt-12">
-              <div className="w-2.5 h-2.5 rounded-full bg-sage animate-pulse"></div>
-              <span className="text-[10px] uppercase tracking-[0.2em] opacity-50 font-black">Cursos Iniciales Disponibles</span>
             </div>
           </div>
         </div>
