@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import Script from 'next/script';
 import { 
   Instagram, 
   Phone, 
@@ -12,21 +13,29 @@ import {
   Clock, 
   Menu,
   X,
-  Calendar as CalendarIcon,
-  Check
+  Calendar as CalendarIcon
 } from 'lucide-react';
 import Image from 'next/image';
-import { DayPicker } from 'react-day-picker';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import 'react-day-picker/dist/style.css';
 
 export default function NailSalonPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isPriceListOpen, setIsPriceListOpen] = React.useState(false);
   const [isBookingOpen, setIsBookingOpen] = React.useState(false);
-  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(new Date());
-  const [selectedTime, setSelectedTime] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (isBookingOpen) {
+      const timer = setTimeout(() => {
+        if ((window as any).Calendly) {
+          // @ts-ignore
+          window.Calendly.initInlineWidget({
+            url: 'https://calendly.com/eugeestetica2?hide_landing_page_details=1&hide_gdpr_banner=1',
+            parentElement: document.querySelector('.calendly-inline-widget'),
+          });
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isBookingOpen]);
 
   const priceList = [
     {
@@ -138,109 +147,39 @@ export default function NailSalonPage() {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-cream w-full max-w-4xl rounded-3xl overflow-hidden relative shadow-2xl flex flex-col md:flex-row"
+              className="bg-white w-full max-w-4xl rounded-3xl overflow-hidden relative shadow-2xl flex flex-col"
               onClick={e => e.stopPropagation()}
             >
               <button 
                 onClick={() => setIsBookingOpen(false)}
-                className="absolute top-4 right-4 text-forest/50 hover:text-lilac transition-colors z-20"
+                className="absolute top-4 right-4 text-forest/50 hover:text-lilac transition-colors z-[110]"
               >
-                <X size={20} />
+                <X size={24} />
               </button>
 
-              <div className="md:w-1/2 p-8 bg-beige text-forest flex flex-col justify-between border-b md:border-b-0 md:border-r border-forest/5">
-                <div>
-                  <span className="text-sage font-bold tracking-widest uppercase text-[10px] mb-2 block">Reserva</span>
-                  <h3 className="serif text-3xl italic mb-6">Tu momento de calma</h3>
-                  <p className="text-xs text-forest/60 leading-relaxed mb-8">
-                    Selecciona el día y horario que mejor se adapte a tu agenda. Te confirmaremos por WhatsApp en menos de 10 minutos.
-                  </p>
-                </div>
-                
-                <div className="space-y-4">
-                  {selectedDate && (
-                    <div className="flex items-center gap-3 bg-warm-gray/50 p-3 rounded-xl">
-                      <CalendarIcon size={16} className="text-sage" />
-                      <div>
-                        <p className="text-[8px] uppercase tracking-widest opacity-50">Fecha Seleccionada</p>
-                        <p className="text-sm font-bold">{format(selectedDate, "PPP", { locale: es })}</p>
-                      </div>
-                    </div>
-                  )}
-                  {selectedTime && (
-                    <div className="flex items-center gap-3 bg-warm-gray/50 p-3 rounded-xl">
-                      <Clock size={16} className="text-sage" />
-                      <div>
-                        <p className="text-[8px] uppercase tracking-widest opacity-50">Horario Seleccionado</p>
-                        <p className="text-sm font-bold">{selectedTime} hs</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="md:w-1/2 p-8 bg-cream overflow-y-auto max-h-[80vh] md:max-h-full">
-                <div className="mb-8">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-forest mb-4">1. Elige el día</h4>
-                  <div className="bg-forest/5 p-2 rounded-2xl">
-                    <DayPicker
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={setSelectedDate}
-                      locale={es}
-                      disabled={{ before: new Date() }}
-                      className="mx-auto"
-                      styles={{
-                        day: { 
-                          margin: '2px', 
-                          borderRadius: '8px', 
-                          fontSize: '12px' 
-                        }
-                      }}
-                      modifiersStyles={{
-                        selected: { backgroundColor: '#2D3A30', color: '#FBFBFB' }
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-forest mb-4">2. Elige el horario</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {timeSlots.map(time => (
-                      <button
-                        key={time}
-                        onClick={() => setSelectedTime(time)}
-                        className={`py-2 px-3 rounded-xl text-[10px] font-bold border transition-all ${
-                          selectedTime === time 
-                            ? "bg-forest text-lilac border-forest shadow-lg scale-105" 
-                            : "bg-white text-forest border-forest/10 hover:border-lilac"
-                        }`}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <button 
-                  disabled={!selectedDate || !selectedTime}
-                  className="w-full bg-forest mt-8 text-lilac py-4 rounded-xl text-[10px] uppercase font-black tracking-widest hover:bg-lilac hover:text-forest transition-all disabled:opacity-30 flex items-center justify-center gap-2 group"
-                >
-                  Confirmar Reserva <Check size={14} className="group-hover:scale-125 transition-transform" />
-                </button>
+              <div className="p-2 md:p-4 h-[80vh] md:h-[750px] overflow-y-auto">
+                <div 
+                  className="calendly-inline-widget" 
+                  data-url="https://calendly.com/eugeestetica2?hide_landing_page_details=1&hide_gdpr_banner=1" 
+                  style={{ minWidth: '320px', height: '100%', width: '100%' }}
+                ></div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
+      <Script 
+        src="https://assets.calendly.com/assets/external/widget.js" 
+        strategy="afterInteractive"
+      />
+
       {/* Navigation */}
       <nav className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 border-b border-forest/5 bg-beige/80 backdrop-blur-md">
         <div className="flex items-center gap-2">
           <div className="relative w-12 h-12 md:w-16 md:h-16 overflow-hidden">
             <Image 
-              src="/input_file_0.png" 
+              src="/logo.png" 
               alt="Estetica by Euge Logo" 
               fill 
               className="object-contain"
@@ -542,9 +481,14 @@ export default function NailSalonPage() {
                 <MapPin className="mx-auto text-forest mb-6" size={40} />
                 <h3 className="serif text-3xl italic mb-3 text-forest">El estudio</h3>
                 <p className="text-xs text-charcoal/60 mb-8 uppercase tracking-[0.2em] font-black">La Paz, Canelones</p>
-                <button className="bg-forest text-lilac w-full py-5 px-4 text-[11px] uppercase tracking-widest font-black hover:bg-lilac hover:text-forest transition-colors rounded-2xl whitespace-nowrap overflow-hidden text-ellipsis">
+                <a 
+                  href="https://maps.app.goo.gl/1UTrNYiKqqUQs7Uy6?g_st=ic" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-forest text-lilac w-full py-5 px-4 text-[11px] uppercase tracking-widest font-black hover:bg-lilac hover:text-forest transition-colors rounded-2xl whitespace-nowrap overflow-hidden text-ellipsis text-center block"
+                >
                   Ver Ruta en Google Maps
-                </button>
+                </a>
              </div>
           </div>
         </section>
@@ -609,13 +553,6 @@ export default function NailSalonPage() {
         .no-scrollbar {
           -ms-overflow-style: none;
           scrollbar-width: none;
-        }
-        /* Custom date picker tweaks */
-        .rdp {
-          --rdp-cell-size: 40px;
-          --rdp-accent-color: #2D3A30;
-          --rdp-background-color: #C4B5FD;
-          margin: 0;
         }
       `}</style>
     </div>

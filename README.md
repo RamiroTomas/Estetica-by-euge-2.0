@@ -1,20 +1,38 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Estética by Euge - Salon de Uñas
 
-# Run and deploy your AI Studio app
+Este es el proyecto de la web para **Estética by Euge**, diseñado para ser rápido, moderno y fácil de usar.
 
-This contains everything you need to run your app locally.
+## 🚀 Despliegue en Vercel
 
-View your app in AI Studio: https://ai.studio/apps/41f622d4-cc34-4865-96db-63f56d1ba313
+Para subir este proyecto a Vercel, sigue estos pasos:
 
-## Run Locally
+1. **Recursos de Imágenes:**
+   - Asegúrate de que todas tus imágenes locales estén dentro de una carpeta llamada `public` en la raíz del proyecto.
+   - **Logo:** Guarda tu logo como `logo.png` dentro de la carpeta `public/`.
+   - En el código, estas imágenes se referencian como `/nombre-de-la-imagen.png`.
 
-**Prerequisites:**  Node.js
+2. **Conectar con GitHub/GitLab:**
+   - Sube este código a un repositorio.
+   - Entra en [Vercel](https://vercel.com/) y crea un nuevo proyecto importando ese repositorio.
 
+3. **Configuración Automática:**
+   - Vercel detectará automáticamente que es un proyecto de Next.js.
+   - Haz clic en **Deploy**.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🛠️ Tecnologías Utilizadas
+
+- **Next.js 15 (App Router)**
+- **Tailwind CSS v4**
+- **Motion (Framer Motion)** para animaciones suaves.
+- **Lucide React** para iconografía moderna.
+- **Google Fonts (Inter & Cormorant Garamond)** para una tipografía elegante.
+
+## 📋 Características
+
+- Agenda de turnos interactiva.
+- Galería de trabajos.
+- Lista de precios dinámica.
+- Diseño totalmente responsivo.
+
+---
+Desarrollado con ❤️ para Estética by Euge.
