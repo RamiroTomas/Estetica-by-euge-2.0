@@ -32,17 +32,25 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           {`
             (function() {
               try {
-                const desc = Object.getOwnPropertyDescriptor(window, 'fetch');
-                if (desc && !desc.set && desc.configurable) {
-                  const originalFetch = window.fetch;
+                var originalFetch = window.fetch;
+                var desc = Object.getOwnPropertyDescriptor(window, 'fetch');
+                if (desc && desc.configurable) {
                   Object.defineProperty(window, 'fetch', {
                     configurable: true,
                     enumerable: true,
                     get: function() { return originalFetch; },
-                    set: function(v) { console.warn('Setmore tried to overwrite fetch'); }
+                    set: function(v) { 
+                      console.warn('Blocked attempt to overwrite window.fetch');
+                    }
                   });
+                } else {
+                  // If not configurable, we try to shadow it if possible, 
+                  // but usually window properties are hard to shadow.
+                  // We've done our best.
                 }
-              } catch (e) {}
+              } catch (e) {
+                console.error('Fetch fix failed:', e);
+              }
             })();
           `}
         </Script>

@@ -23,10 +23,30 @@ export default function NailSalonPage() {
   const galleryImages = [1, 2, 3, 4, 5, 6];
 
   React.useEffect(() => {
+    // Gallery interval
     const interval = setInterval(() => {
       setGalleryIndex((prev) => prev + 1);
     }, 10000);
-    return () => clearInterval(interval);
+
+    // Re-initialize Setmore buttons if the script is loaded
+    const initSetmore = () => {
+      try {
+        // @ts-ignore
+        if (window.AnywhereBookNow && typeof window.AnywhereBookNow.initialize === 'function') {
+          // @ts-ignore
+          window.AnywhereBookNow.initialize();
+        }
+      } catch (e) {
+        console.error("Setmore re-init failed:", e);
+      }
+    };
+
+    const timer = setTimeout(initSetmore, 1500);
+    
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timer);
+    };
   }, []);
 
   const priceList = [
@@ -152,8 +172,8 @@ export default function NailSalonPage() {
 
         <div className="flex items-center gap-4">
           <button 
-            id="Anywhere_button_nav"
-            className="anywhere-book-now-button bg-beige text-forest px-4 md:px-6 py-2 text-[10px] md:text-xs uppercase tracking-widest hover:bg-lilac hover:text-forest transition-all duration-300 font-bold"
+            id="Anywhere_button_iframe"
+            className="anywhere-book-now-button bg-lilac text-forest px-4 md:px-6 py-2 text-[10px] md:text-xs uppercase tracking-widest hover:bg-forest hover:text-lilac transition-all duration-300 font-bold shadow-md rounded-sm"
             data-booking-url="https://esteticabyeuge.setmore.com"
             data-new-tab="false"
           >
@@ -276,7 +296,7 @@ export default function NailSalonPage() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-end mb-20 gap-8 relative z-10 text-center md:text-left">
             <div>
               <span className="text-forest font-black serif italic text-lg mb-2 block tracking-widest">Mis Precios</span>
-              <h2 className="text-5xl md:text-7xl font-bold text-forest leading-tight uppercase tracking-tighter">Manos y Pies</h2>
+              <h2 className="text-5xl md:text-7xl serif font-light text-forest leading-tight">Manos y <span className="text-lilac">Pies</span></h2>
             </div>
             <div className="md:text-right flex flex-col items-center md:items-end">
               <p className="text-xs text-forest/40 max-w-xs mb-6 uppercase tracking-[0.3em] font-bold">
@@ -296,7 +316,7 @@ export default function NailSalonPage() {
               { 
                 title: "Manicura Rusa", 
                 desc: "Limpieza anatómica total para un crecimiento saludable y estético.",
-                img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800"
+                img: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&q=80&w=800"
               },
               { 
                 title: "Kapping Profesional", 
@@ -306,17 +326,17 @@ export default function NailSalonPage() {
               { 
                 title: "Esmaltado Semi", 
                 desc: "Color vibrante y duradero con un acabado profesional perfecto.",
-                img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800"
+                img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=800"
               },
               { 
                 title: "Estética de Pies", 
                 desc: "Cuidado integral para tus pies, dejándolos suaves, sanos y prolijos.",
-                img: "https://images.unsplash.com/photo-1549416878-b9ca3532c1c9?auto=format&fit=crop&q=80&w=800"
+                img: "https://images.unsplash.com/photo-1519415510236-83170f82b7c3?auto=format&fit=crop&q=80&w=800"
               },
               { 
                 title: "Diseño de Autor", 
                 desc: "Nail art personalizado. Desde minimalismo elegante hasta creaciones complejas.",
-                img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800"
+                img: "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&q=80&w=800"
               }
             ].map((cat, i) => (
               <motion.div 
