@@ -18,6 +18,7 @@ import Image from 'next/image';
 export default function NailSalonPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isPriceListOpen, setIsPriceListOpen] = React.useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = React.useState(false);
   const [galleryIndex, setGalleryIndex] = React.useState(0);
 
   const galleryImages = [1, 2, 3, 4, 5, 6];
@@ -27,25 +28,9 @@ export default function NailSalonPage() {
     const interval = setInterval(() => {
       setGalleryIndex((prev) => prev + 1);
     }, 10000);
-
-    // Re-initialize Setmore buttons if the script is loaded
-    const initSetmore = () => {
-      try {
-        // @ts-ignore
-        if (window.AnywhereBookNow && typeof window.AnywhereBookNow.initialize === 'function') {
-          // @ts-ignore
-          window.AnywhereBookNow.initialize();
-        }
-      } catch (e) {
-        console.error("Setmore re-init failed:", e);
-      }
-    };
-
-    const timer = setTimeout(initSetmore, 1500);
     
     return () => {
       clearInterval(interval);
-      clearTimeout(timer);
     };
   }, []);
 
@@ -146,7 +131,43 @@ export default function NailSalonPage() {
         )}
       </AnimatePresence>
 
-      {/* Setmore Booking Script moved to layout.tsx */}
+      {/* Booking Modal */}
+      <AnimatePresence>
+        {isBookingModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center p-0 md:p-4 bg-charcoal/80 backdrop-blur-md"
+            onClick={() => setIsBookingModalOpen(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white w-full max-w-4xl h-full md:h-[90vh] rounded-none md:rounded-3xl relative shadow-2xl overflow-hidden"
+              onClick={e => e.stopPropagation()}
+            >
+              <button 
+                onClick={() => setIsBookingModalOpen(false)}
+                className="absolute top-4 right-4 text-charcoal/50 hover:text-lilac transition-colors z-50 bg-white/80 p-2 rounded-full backdrop-blur-sm"
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="w-full h-full pt-12 md:pt-0">
+                <iframe
+                  src="https://esteticabyeuge.setmore.com"
+                  width="100%"
+                  height="100%"
+                  style={{ border: "none" }}
+                  title="Reservas Estética by Euge"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Navigation */}
       <nav className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 border-b border-beige/5 bg-forest/80 backdrop-blur-md">
@@ -172,10 +193,8 @@ export default function NailSalonPage() {
 
         <div className="flex items-center gap-4">
           <button 
-            id="Anywhere_button_iframe"
-            className="anywhere-book-now-button bg-lilac text-forest px-4 md:px-6 py-2 text-[10px] md:text-xs uppercase tracking-widest hover:bg-forest hover:text-lilac transition-all duration-300 font-bold shadow-md rounded-sm"
-            data-booking-url="https://esteticabyeuge.setmore.com"
-            data-new-tab="false"
+            onClick={() => setIsBookingModalOpen(true)}
+            className="bg-lilac text-forest px-4 md:px-6 py-2 text-[10px] md:text-xs uppercase tracking-widest hover:bg-forest hover:text-lilac transition-all duration-300 font-bold shadow-md rounded-sm"
           >
             Reserva Ahora
           </button>
@@ -237,10 +256,8 @@ export default function NailSalonPage() {
                 className="flex flex-col sm:flex-row gap-4 sm:items-center"
               >
                 <button 
-                  id="Anywhere_button_hero"
-                  className="anywhere-book-now-button bg-forest text-cream px-10 py-5 text-[10px] uppercase tracking-widest hover:bg-lilac hover:text-forest transition-all text-center font-bold shadow-xl rounded-sm"
-                  data-booking-url="https://esteticabyeuge.setmore.com"
-                  data-new-tab="false"
+                  onClick={() => setIsBookingModalOpen(true)}
+                  className="bg-forest text-cream px-10 py-5 text-[10px] uppercase tracking-widest hover:bg-lilac hover:text-forest transition-all text-center font-bold shadow-xl rounded-sm"
                 >
                   Agendar Mi Cita
                 </button>
@@ -540,10 +557,8 @@ export default function NailSalonPage() {
       {/* Reservation FAB for Mobile */}
       <div className="fixed bottom-8 right-8 z-40 md:hidden">
         <button 
-          id="Anywhere_button_fab"
-          className="anywhere-book-now-button w-16 h-16 rounded-full bg-forest text-lilac shadow-2xl flex items-center justify-center border-2 border-lilac/30 scale-110 active:scale-95 transition-transform"
-          data-booking-url="https://esteticabyeuge.setmore.com"
-          data-new-tab="false"
+          onClick={() => setIsBookingModalOpen(true)}
+          className="w-16 h-16 rounded-full bg-forest text-lilac shadow-2xl flex items-center justify-center border-2 border-lilac/30 scale-110 active:scale-95 transition-transform"
         >
           <CalendarIcon size={28} />
         </button>
