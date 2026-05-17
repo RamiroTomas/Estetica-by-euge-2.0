@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import Script from 'next/script';
 import { 
   Instagram, 
-  Phone, 
-  MessageCircle, 
   MapPin, 
   Star, 
   ChevronRight, 
@@ -20,28 +18,23 @@ import Image from 'next/image';
 export default function NailSalonPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isPriceListOpen, setIsPriceListOpen] = React.useState(false);
-  const [isBookingOpen, setIsBookingOpen] = React.useState(false);
+  const [galleryIndex, setGalleryIndex] = React.useState(0);
+
+  const galleryImages = [1, 2, 3, 4, 5, 6];
 
   React.useEffect(() => {
-    if (isBookingOpen) {
-      const timer = setTimeout(() => {
-        if ((window as any).Calendly) {
-          // @ts-ignore
-          window.Calendly.initInlineWidget({
-            url: 'https://calendly.com/eugeestetica2?hide_landing_page_details=1&hide_gdpr_banner=1',
-            parentElement: document.querySelector('.calendly-inline-widget'),
-          });
-        }
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [isBookingOpen]);
+    const interval = setInterval(() => {
+      setGalleryIndex((prev) => prev + 1);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const priceList = [
     {
       category: "ESMALTADO SEMIPERMANENTE",
       seña: "$345",
       items: [
+        { label: "Esmaltado Semi", price: "$690" },
         { label: "Lisas", price: "$690" },
         { label: "Diseño en 2 uñas", price: "$750" },
         { label: "Diseño en 3 o más uñas", price: "$790" }
@@ -51,6 +44,7 @@ export default function NailSalonPage() {
       category: "PIES",
       seña: "$350",
       items: [
+        { label: "Estética de pies", price: "$750" },
         { label: "Pies lisos", price: "$700" },
         { label: "Pies con diseño", price: "$790" }
       ]
@@ -102,8 +96,7 @@ export default function NailSalonPage() {
 
               <div className="bg-beige px-8 py-10 rounded-2xl text-center">
                 <div className="relative mb-8 inline-block">
-                  <h2 className="serif text-5xl md:text-6xl text-forest italic leading-none">LISTA DE</h2>
-                  <h2 className="text-4xl md:text-5xl font-black text-lilac absolute -bottom-4 right-0 translate-x-2">Precios</h2>
+                  <h2 className="serif text-5xl md:text-6xl text-forest leading-none uppercase tracking-tighter">Lista de Precios</h2>
                 </div>
 
                 <div className="space-y-8 mt-12 bg-warm-gray/30 p-6 md:p-8 rounded-3xl text-left overflow-y-auto max-h-[60vh] no-scrollbar">
@@ -133,53 +126,14 @@ export default function NailSalonPage() {
         )}
       </AnimatePresence>
 
-      {/* Booking Modal */}
-      <AnimatePresence>
-        {isBookingOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-charcoal/60 backdrop-blur-sm"
-            onClick={() => setIsBookingOpen(false)}
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-white w-full max-w-4xl rounded-3xl overflow-hidden relative shadow-2xl flex flex-col"
-              onClick={e => e.stopPropagation()}
-            >
-              <button 
-                onClick={() => setIsBookingOpen(false)}
-                className="absolute top-4 right-4 text-forest/50 hover:text-lilac transition-colors z-[110]"
-              >
-                <X size={24} />
-              </button>
-
-              <div className="p-2 md:p-4 h-[80vh] md:h-[750px] overflow-y-auto">
-                <div 
-                  className="calendly-inline-widget" 
-                  data-url="https://calendly.com/eugeestetica2?hide_landing_page_details=1&hide_gdpr_banner=1" 
-                  style={{ minWidth: '320px', height: '100%', width: '100%' }}
-                ></div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <Script 
-        src="https://assets.calendly.com/assets/external/widget.js" 
-        strategy="afterInteractive"
-      />
+      {/* Setmore Booking Script moved to layout.tsx */}
 
       {/* Navigation */}
       <nav className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 border-b border-beige/5 bg-forest/80 backdrop-blur-md">
         <div className="flex items-center gap-2">
           <div className="relative w-10 h-10 md:w-12 md:h-12 overflow-hidden rounded-md bg-forest">
             <Image 
-              src="/logo.png.jpg" 
+              src="/logo.png" 
               alt="Estetica by Euge Logo" 
               fill 
               className="object-contain"
@@ -198,8 +152,10 @@ export default function NailSalonPage() {
 
         <div className="flex items-center gap-4">
           <button 
-            onClick={() => setIsBookingOpen(true)}
-            className="bg-beige text-forest px-4 md:px-6 py-2 text-[10px] md:text-xs uppercase tracking-widest hover:bg-lilac hover:text-forest transition-all duration-300 font-bold"
+            id="Anywhere_button_nav"
+            className="anywhere-book-now-button bg-beige text-forest px-4 md:px-6 py-2 text-[10px] md:text-xs uppercase tracking-widest hover:bg-lilac hover:text-forest transition-all duration-300 font-bold"
+            data-booking-url="https://esteticabyeuge.setmore.com"
+            data-new-tab="false"
           >
             Reserva Ahora
           </button>
@@ -239,10 +195,10 @@ export default function NailSalonPage() {
               transition={{ duration: 0.8 }}
               className="relative z-10"
             >
-              <span className="text-sage font-bold serif italic text-lg md:text-xl mb-4 block">Un santuario de belleza local</span>
+              <span className="text-sage font-bold serif italic text-lg md:text-xl mb-4 block">Un espacio pensado para mimarte</span>
               <h1 className="text-5xl md:text-8xl serif font-light leading-[0.85] mb-8 text-charcoal">
                 Estilo &<br />
-                <span className="font-bold italic text-forest">Diferencia</span>
+                <span className="text-forest">Diferencia</span>
               </h1>
               
               <motion.p 
@@ -251,7 +207,7 @@ export default function NailSalonPage() {
                 transition={{ delay: 0.4, duration: 0.8 }}
                 className="text-sm md:text-base text-charcoal/70 mb-10 max-w-sm leading-relaxed"
               >
-                Especialistas en manicura rusa y nail art. Calidad y detalle en cada sesión para que tus manos hablen por ti.
+                Especialista con mas de 6 años de experiencia en manicura rusa, kapping y esmaltado semipermanente.
               </motion.p>
               
               <motion.div 
@@ -261,8 +217,10 @@ export default function NailSalonPage() {
                 className="flex flex-col sm:flex-row gap-4 sm:items-center"
               >
                 <button 
-                  onClick={() => setIsBookingOpen(true)}
-                  className="bg-forest text-cream px-10 py-5 text-[10px] uppercase tracking-widest hover:bg-lilac hover:text-forest transition-all text-center font-bold shadow-xl rounded-sm"
+                  id="Anywhere_button_hero"
+                  className="anywhere-book-now-button bg-forest text-cream px-10 py-5 text-[10px] uppercase tracking-widest hover:bg-lilac hover:text-forest transition-all text-center font-bold shadow-xl rounded-sm"
+                  data-booking-url="https://esteticabyeuge.setmore.com"
+                  data-new-tab="false"
                 >
                   Agendar Mi Cita
                 </button>
@@ -317,12 +275,12 @@ export default function NailSalonPage() {
         <section id="servicios" className="py-32 px-6 md:px-12 bg-white relative overflow-hidden">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-end mb-20 gap-8 relative z-10 text-center md:text-left">
             <div>
-              <span className="text-forest font-black serif italic text-lg mb-2 block tracking-widest">Nuestra Carta</span>
-              <h2 className="text-5xl md:text-7xl serif font-light text-forest leading-tight">Especialidades <br/><span className="text-lilac">& Belleza</span></h2>
+              <span className="text-forest font-black serif italic text-lg mb-2 block tracking-widest">Mis Precios</span>
+              <h2 className="text-5xl md:text-7xl font-bold text-forest leading-tight uppercase tracking-tighter">Manos y Pies</h2>
             </div>
             <div className="md:text-right flex flex-col items-center md:items-end">
               <p className="text-xs text-forest/40 max-w-xs mb-6 uppercase tracking-[0.3em] font-bold">
-                Técnica impecable y productos de primera para tu bienestar.
+                Detalle, cuidado y calidad en cada sesion
               </p>
               <button 
                 onClick={() => setIsPriceListOpen(true)}
@@ -344,6 +302,16 @@ export default function NailSalonPage() {
                 title: "Kapping Profesional", 
                 desc: "Capa protectora de gel para uñas que necesitan fuerza extra sin perder naturalidad.",
                 img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                title: "Esmaltado Semi", 
+                desc: "Color vibrante y duradero con un acabado profesional perfecto.",
+                img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800"
+              },
+              { 
+                title: "Estética de Pies", 
+                desc: "Cuidado integral para tus pies, dejándolos suaves, sanos y prolijos.",
+                img: "https://images.unsplash.com/photo-1549416878-b9ca3532c1c9?auto=format&fit=crop&q=80&w=800"
               },
               { 
                 title: "Diseño de Autor", 
@@ -368,28 +336,38 @@ export default function NailSalonPage() {
         </section>
 
         {/* Gallery Section - Soft Lilac (Violetita) */}
-        <section id="galeria" className="py-24 bg-[#F8F7FF]">
+        <section id="galeria" className="py-24 bg-[#F8F7FF] overflow-hidden">
           <div className="px-6 md:px-12 max-w-7xl mx-auto mb-16 text-center">
              <span className="text-lilac font-black uppercase tracking-[0.5em] text-[10px] mb-4 block">Mira nuestro feed</span>
             <h2 className="text-4xl md:text-6xl serif font-light text-forest italic leading-none">Galería de Trabajos</h2>
           </div>
           
-          <div className="flex overflow-x-auto pb-10 gap-6 px-6 no-scrollbar">
-            {[1, 2, 3, 4, 5, 6].map((img) => (
-              <motion.div 
-                key={img} 
-                whileHover={{ scale: 1.02 }}
-                className="flex-shrink-0 w-80 h-[500px] relative bg-white rounded-3xl overflow-hidden shadow-xl border border-forest/5"
-              >
-                <Image 
-                  src={`https://picsum.photos/seed/nail-art-${img}/600/900`}
-                  alt={`Trabajo realizado ${img}`}
-                  fill
-                  className="object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </motion.div>
-            ))}
+          <div className="relative h-[550px] overflow-hidden group">
+            <motion.div 
+              animate={{ 
+                x: `-${(galleryIndex % galleryImages.length) * 350}px` 
+              }}
+              transition={{ 
+                duration: 0.8,
+                ease: [0.32, 0.72, 0, 1]
+              }}
+              className="flex gap-6 px-6"
+            >
+              {[...galleryImages, ...galleryImages, ...galleryImages].map((img, idx) => (
+                <div 
+                  key={idx} 
+                  className="flex-shrink-0 w-80 h-[500px] relative bg-white rounded-3xl overflow-hidden shadow-xl border border-forest/5"
+                >
+                  <Image 
+                    src={`https://picsum.photos/seed/nail-art-${img}/600/900`}
+                    alt={`Trabajo realizado ${img}`}
+                    fill
+                    className="object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              ))}
+            </motion.div>
           </div>
         </section>
 
@@ -418,8 +396,18 @@ export default function NailSalonPage() {
         </section>
 
         {/* Contact & Map Section - Lighter Section */}
-        <section id="contacto" className="grid grid-cols-1 lg:grid-cols-2 bg-beige">
-          <div className="p-8 md:p-24 flex flex-col justify-center items-center lg:items-start text-center lg:text-left border-b lg:border-b-0 lg:border-r border-forest/5">
+        <section id="contacto" className="grid grid-cols-1 lg:grid-cols-2 bg-beige relative overflow-hidden">
+          {/* Blurred Background Placeholder */}
+          <div className="absolute inset-0 z-0 pointer-events-none opacity-20 blur-3xl">
+            <Image 
+              src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&q=80&w=1000"
+              alt="Background Blur"
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          <div className="p-8 md:p-24 flex flex-col justify-center items-center lg:items-start text-center lg:text-left border-b lg:border-b-0 lg:border-r border-forest/5 relative z-10">
             <div className="max-w-md">
               <span className="text-sage font-bold serif italic text-xl mb-4 block tracking-widest">Encuéntranos</span>
               <h2 className="text-5xl md:text-6xl serif font-light mb-12 text-forest leading-none italic">Estudio Euge</h2>
@@ -435,15 +423,20 @@ export default function NailSalonPage() {
                   </div>
                 </div>
                 
-                <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
-                  <div className="w-12 h-12 rounded-full bg-forest/5 flex items-center justify-center text-forest">
-                    <Phone size={24} />
+                <a 
+                  href="https://www.instagram.com/estetica.by.euge/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex flex-col lg:flex-row items-center lg:items-start gap-6 group cursor-pointer"
+                >
+                  <div className="w-12 h-12 rounded-full bg-forest/5 flex items-center justify-center text-forest group-hover:bg-forest group-hover:text-lilac transition-all">
+                    <Instagram size={24} />
                   </div>
                   <div>
-                    <h4 className="text-[10px] uppercase font-black tracking-widest mb-2 text-forest/40">WhatsApp</h4>
-                    <p className="text-lg font-bold text-forest">Consultas al Privado</p>
+                    <h4 className="text-[10px] uppercase font-black tracking-widest mb-2 text-forest/40 group-hover:text-forest transition-colors">Instagram</h4>
+                    <p className="text-lg font-bold text-forest underline decoration-lilac underline-offset-4">@estetica.by.euge</p>
                   </div>
-                </div>
+                </a>
                 
                 <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
                   <div className="w-12 h-12 rounded-full bg-forest/5 flex items-center justify-center text-forest">
@@ -455,31 +448,16 @@ export default function NailSalonPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="mt-16 flex justify-center lg:justify-start gap-8">
-                <a href="https://www.instagram.com/estetica.by.euge/?hl=es" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity">
-                  <div className="w-12 h-12 rounded-full border border-forest/10 flex items-center justify-center hover:bg-forest hover:text-lilac transition-all">
-                    <Instagram size={22} />
-                  </div>
-                  <span className="text-xs font-bold text-forest/60 uppercase tracking-widest">Instagram</span>
-                </a>
-                <a href="https://w.app/esteticabyeuge" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity">
-                  <div className="w-12 h-12 rounded-full border border-forest/10 flex items-center justify-center hover:bg-forest hover:text-lilac transition-all">
-                    <Phone size={22} />
-                  </div>
-                  <span className="text-xs font-bold text-forest/60 uppercase tracking-widest">Whatsapp</span>
-                </a>
-              </div>
             </div>
           </div>
           
           <div className="h-[500px] lg:h-auto relative overflow-hidden flex items-center justify-center bg-warm-gray">
-             <div className="absolute inset-0 opacity-40 grayscale mix-blend-overlay">
+             <div className="absolute inset-0 opacity-60">
                 <Image 
-                  src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?auto=format&fit=crop&q=80&w=1000"
-                  alt="Map Placeholder"
+                  src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?auto=format&fit=crop&q=80&w=1000"
+                  alt="Studio Detail"
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-[3000ms] hover:scale-110"
                   referrerPolicy="no-referrer"
                 />
              </div>
@@ -511,8 +489,9 @@ export default function NailSalonPage() {
               </p>
             </div>
             <div className="flex gap-6 mt-12">
-              <Instagram size={18} className="text-forest/40 hover:text-forest cursor-pointer transition-colors" />
-              <Phone size={18} className="text-forest/40 hover:text-forest cursor-pointer transition-colors" />
+              <a href="https://www.instagram.com/estetica.by.euge/" target="_blank" rel="noopener noreferrer">
+                <Instagram size={18} className="text-forest/40 hover:text-forest cursor-pointer transition-colors" />
+              </a>
             </div>
           </div>
           
@@ -527,7 +506,7 @@ export default function NailSalonPage() {
           <div className="p-12 bg-lilac/5 flex flex-col justify-between">
             <div>
               <h4 className="text-[10px] uppercase tracking-[0.4em] text-forest mb-8 font-black">Contacto</h4>
-              <p className="text-2xl serif font-light italic mb-2 tracking-wide">+598 94021747</p>
+              <p className="text-2xl serif font-light italic mb-2 tracking-wide">Instagram DM</p>
               <p className="text-[10px] opacity-40 uppercase tracking-[0.3em] font-black">ESTETICA.BY.EUGE</p>
             </div>
           </div>
@@ -541,8 +520,10 @@ export default function NailSalonPage() {
       {/* Reservation FAB for Mobile */}
       <div className="fixed bottom-8 right-8 z-40 md:hidden">
         <button 
-          onClick={() => setIsBookingOpen(true)}
-          className="w-16 h-16 rounded-full bg-forest text-lilac shadow-2xl flex items-center justify-center border-2 border-lilac/30 scale-110 active:scale-95 transition-transform"
+          id="Anywhere_button_fab"
+          className="anywhere-book-now-button w-16 h-16 rounded-full bg-forest text-lilac shadow-2xl flex items-center justify-center border-2 border-lilac/30 scale-110 active:scale-95 transition-transform"
+          data-booking-url="https://esteticabyeuge.setmore.com"
+          data-new-tab="false"
         >
           <CalendarIcon size={28} />
         </button>
